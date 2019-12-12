@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>lsl书城</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+<!--顶部导航-->
+<nav class="light-blue accent-1">
+    <div class="nav-wrapper ">
+        <!--左侧logo-->
+        <a href="#!" class="brand-logo blue-text  ">LSL</a>
+        <ul class="hide-on-med-and-down col right">
+            <li><a href="#!">首页</a></li>
+            <li><a href="#!">出售图书</a></li>
+            <li><a href="https://github.com/LSLWind/book-sale-system">GitHub地址</a></li>
+            <li><a href="#!">项目详细文档</a></li>
+
+            <li th:if="${customer!=null}">
+                <a class="dropdown-button" href="#!" data-activates="dropdown1">
+                    <img class="responsive-img circle " th:src="@{${customer.headImg}}" style="width: 50px;height: 50px">
+                    <i class="material-icons right">arrow_drop_down</i></a>
+            </li>
+            <li th:if="${customer==null}">
+                <a class="waves-effect waves-light btn" th:href="'/customer/loginPage'">登录/注册</a>
+            </li>
+        </ul>
+        <ul id="dropdown1" class="dropdown-content" th:if="${customer!=null}">
+            <li><a th:href="'/cart/'+${customer.id}">购物车</a></li>
+            <li><a th:href="'/customer/'+${customer.id}">个人中心</a></li>
+            <li><a onclick="clearCookieByKey('token')">退出登录</a></li><!--退出登录时清除token即可-->
+        </ul>
+
+        <!--顶部分类频道-->
+        <ul class="hide-on-med-and-down col right" th:each="channel:${channelList}">
+            <li><a th:href="'/channel/'+${channel.getId()}" th:text="${channel.name}"></a></li>
+        </ul>
+
+    </div>
+</nav>
+
+
+
+<!--图书信息-->
+<div class="row">
+    <!--中间图书信息-->
+    <div class="col s10">
+        <div class="row" >
+            <div class="col s6 " th:each="book:${bookList}">
+                <div class="card horizontal " >
+                    <!--左侧图片-->
+                    <div class="card-image">
+                        <img class="responsive-img" style="width: 120px;height: 100%" th:src="@{${book.imgs}}">
+                    </div>
+                    <div class="card-stacked">
+                        <!--中间图书信息-->
+                        <div class="card-content">
+                            <div class="row">
+                                <div class="col s12">
+                                    <h6 class="truncate" th:text="${book.name}"></h6>
+                                </div>
+
+                                <!--第二部分：根据长度进行内容显示-->
+                                <div class="col s12 " th:if="${book.content.length()<=50}">
+                                    <h6 th:text="${book.content}"></h6>
+                                </div>
+                                <div class="col s12 " th:if="${book.content.length()>50}">
+                                    <h6 th:text="${book.content.substring(0,30)}+'...'"></h6>
+                                </div>
+                                <!--第三部分：其余信息-->
+
+                                    作者:<span th:text="${book.author}"></span>
+
+                                    原价:<span th:text="${book.price}" class="text-small"></span>
+
+                                    现价:<span class="text-small" th:text="${book.discountPrice}" ></span>
+
+                                    销售量:<span class="text-small" th:text="${book.saleCount}" ></span>
+
+                            </div>
+                            <div class="row">
+                                <a class="waves-effect waves-light btn col s4" th:href="'/book/'+${book.id}">查看详情</a>
+                                <a class="waves-effect waves-light btn col s4" th:onclick="addToCart([[${book.id}]],[[${book.name}]],[[${book.discountPrice}]],[[${book.imgs}]])">加入购物车</a>
+                                <a class="waves-effect waves-light btn col s4" th:if="${customer!=null}" th:href="'/book/order/'+${customer.id}+'/'+${book.id}">立即购买</a>
+                                <a class="waves-effect waves-light btn col s4" th:if="${customer==null}" href="/customer/loginPage">购买请登录</a>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--右侧通知消息-->
+    <div class="col s2">
+        <div class="card-panel teal lighten-2">LSL-开发日历</div>
+        <ul class="collapsible popout" data-collapsible="accordion">
+            <!--折叠塌缩列表-->
+            <li>
+                <div class="collapsible-header"><i class="material-icons">filter_drama</i>2019.12.5</div>
+                <div class="collapsible-body"><p>开启项目工程：后端--使用SpringBoot快速构建，ORM-MyBatis，前端页面设计--使用materializecss，初步建表，首页与分类页面设计</p></div>
+            </li>
+            <li>
+                <div class="collapsible-header"><i class="material-icons">filter_drama</i>2019.12.6</div>
+                <div class="collapsible-body"><p>图书信息随机选取，图书具体信息页面，图书ajax请求加入购物车，个人信息页面，个人信息编辑页面</p></div>
+            </li>
+            <li>
+                <div class="collapsible-header"><i class="material-icons">filter_drama</i>2019.12.7</div>
+                <div class="collapsible-body"><p>写文档，购物车主页面正在进行</p></div>
+            </li>
+            <li>
+                <div class="collapsible-header"><i class="material-icons">filter_drama</i>2019.12.11</div>
+                <div class="collapsible-body"><p>加入仓库，商店对应多个仓库，仓库对应多个书籍，购买书籍进入订单页面，确认后点击ajax请求处理订单，
+                    为加快并发处理速度引入缓存，为保证数据一致性对缓存加锁，写日志保证记录缓存数据，服务器关闭一定写缓存数据到数据库</p></div>
+            </li>
+        </ul>
+    </div>
+
+</div>
+</body>
+<!--JQuery必须引入-->
+<script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
+<script>
+
+    $(".dropdown-button").dropdown();
+    function addToCart(bookId,bookName,bookPrice,bookImgs) {
+        //先判断用户是否登录
+        obj = document.getElementById("loginButton");
+        if(obj!=null){
+            window.location.href="/customer/loginPage";
+        }else {
+            //将书加入购物车，异步ajax请求
+            Materialize.toast('正在ajax请求加入购物车', 3000, 'rounded');
+
+            var customerId=[[${customer==null?0:customer.id}]];
+
+            //ajax验证，提交表单数据
+            var data = {
+                "bookId": bookId,
+                "customerId": customerId,
+                "bookName": bookName,
+                "bookPrice":bookPrice,
+                "bookImg":bookImgs,
+                "count": "1",
+            };
+            var url = '/cart/add';
+            $.ajax({
+                type: 'POST',//方法类型
+                dataType: "json",//预期服务器返回的数据类型
+                url: url,
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(data),
+                success: function (result) {
+                    if (result.statusCode === 200) {
+                        Materialize.toast('添加成功', 3000, 'rounded');
+                    } else {
+                        swal(result.message, {
+                            icon: "error",
+                        });
+                    }
+                    ;
+                },
+                error: function () {
+                    swal("数据库异常，请重试", {
+                        icon: "error",
+                    });
+                }
+            });
+        }
+    }
+
+    //通过name来删除cookie，设置过期时间为负时间即可
+    function clearCookieByKey(name) {
+        var exp = new Date();
+        exp.setTime(exp.getTime()-1);
+        document.cookie = name + "=" + escape("") + ";expires=" + exp.toGMTString() + ";path=/";
+        window.location.href = '/index';
+    }
+</script>
+</html>

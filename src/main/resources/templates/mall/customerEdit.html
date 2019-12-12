@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>lsl书城--个人中心</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+<!--顶部导航-->
+<nav class="light-blue accent-1">
+    <div class="nav-wrapper ">
+        <!--左侧logo-->
+        <a href="/" class="brand-logo blue-text  ">LSL</a>
+        <ul class="hide-on-med-and-down col right">
+            <li><a href="/">首页</a></li>
+            <li><a href="#!">出售图书</a></li>
+            <li><a href="https://github.com/LSLWind/book-sale-system">GitHub地址</a></li>
+            <li><a href="#!">项目详细文档</a></li>
+
+            <li th:if="${customer!=null}">
+                <a class="dropdown-button" href="#!" data-activates="dropdown1">
+                    <img class="responsive-img circle " th:src="@{${customer.headImg}}" style="width: 50px;height: 50px">
+                    <i class="material-icons right">arrow_drop_down</i></a>
+            </li>
+            <li th:if="${customer==null}">
+                <a class="waves-effect waves-light btn" th:href="'/customer/loginPage'">登录/注册</a>
+            </li>
+        </ul>
+        <ul id="dropdown1" class="dropdown-content" th:if="${customer!=null}">
+            <li><a th:href="'/cart/'+${customer.id}">购物车</a></li>
+            <li><a th:href="'/customer/'+${customer.id}">个人中心</a></li>
+            <li><a onclick="clearCookieByKey('token')">退出登录</a></li><!--退出登录时清除token即可-->
+        </ul>
+
+        <!--顶部分类频道-->
+        <ul class="hide-on-med-and-down col right" th:each="channel:${channelList}">
+            <li><a th:href="'/channel/'+${channel.getId()}" th:text="${channel.name}"></a></li>
+        </ul>
+
+    </div>
+</nav>
+
+<!--用户信息编辑-->
+<div class="container">
+    <!--顶部个人信息-->
+    <div class="card-panel">
+        <div class="section">
+            <h5>个人资料编辑<i class="material-icons">grade</i></h5>
+        </div>
+        <div class="divider"></div>
+        <div class="section">
+            <div class="row">
+                <div class="col s2">头像</div>
+                <div class="col s10">
+                    <img th:src="@{${customer.headImg}}">
+                    <a class="waves-effect waves-light btn" >点击上传</a>
+                </div>
+            </div>
+        </div>
+        <div class="divider"></div>
+        <div class="section">
+            <div class="row">
+                <div class="col s2"><h6>用户名<i class="material-icons prefix">mode_edit</i></h6></div>
+                <div class="col s10">
+                    <input th:value="${customer.name}" id="name" type="text" class="validate">
+                </div>
+            </div>
+        </div>
+        <div class="divider"></div>
+        <div class="section">
+            <div class="row">
+                <div class="col s2"><h6>性别<i class="material-icons prefix">mode_edit</i></h6></div>
+                <div class="col s10 input-field">
+                    <select id="sex">
+                        <option value="1">男</option>
+                        <option value="2">女</option>
+                    </select>
+                    <label>性别</label>
+                </div>
+            </div>
+        </div>
+        <div class="divider"></div>
+        <div class="section">
+            <div class="row">
+                <div class="col s2"><h6>出生日期<i class="material-icons prefix">mode_edit</i></h6></div>
+                <div class="col s10">
+                    <input th:value="${customer.birthDate}" id="birthDate" type="text" class="validate" placeholder="格式为2019-12-06">
+                </div>
+            </div>
+        </div>
+        <div class="divider"></div>
+        <div class="section">
+            <div class="row">
+                <div class="col s2"><h6>省份<i class="material-icons prefix">mode_edit</i></h6></div>
+                <div class="col s10">
+                    <input th:value="${customer.province}" id="province" type="text" class="validate">
+                </div>
+            </div>
+        </div>
+        <div class="section">
+            <div class="row">
+                <div class="col s2"><h6>城市<i class="material-icons prefix">mode_edit</i></h6></div>
+                <div class="col s10">
+                    <input th:value="${customer.city}" id="city" type="text" class="validate">
+                </div>
+            </div>
+        </div>
+        <div class="section">
+            <div class="row">
+                <div class="col s2"><h6>具体地址<i class="material-icons prefix">mode_edit</i></h6></div>
+                <div class="col s10">
+                    <input th:value="${customer.address}" id="address" type="text" class="validate">
+                </div>
+            </div>
+        </div>
+        <div class="section">
+            <div class="row">
+                <div class="col s2"><h6>邮箱<i class="material-icons prefix">mode_edit</i></h6></div>
+                <div class="col s10">
+                    <input th:value="${customer.email}" id="email" type="text" class="validate">
+                </div>
+            </div>
+        </div>
+        <div class="section">
+            <div class="row">
+                <div class="col s2"><h6>手机号（登录账号）<i class="material-icons prefix">mode_edit</i></h6></div>
+                <div class="col s10">
+                    <input th:value="${customer.phoneNumber}" id="phoneNumber" type="text" class="validate">
+                </div>
+            </div>
+        </div>
+        <div class="section">
+            <div class="row">
+                <div class="col s2"><h6>账号密码<i class="material-icons prefix">mode_edit</i></h6></div>
+                <div class="col s10">
+                    <input th:value="${customer.password}" id="password" type="text" class="validate">
+                </div>
+            </div>
+        </div>
+        <a class="waves-effect waves-light btn" onclick="updateInfo()">确定更新</a>
+    </div>
+</div>
+
+</body>
+<!--JQuery必须引入-->
+<script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
+<script th:inline="javascript">
+    $(".dropdown-button").dropdown();
+    $(document).ready(function() {
+        $('select').material_select();
+    });
+
+
+    function updateInfo() {
+        //请求更新信息，异步ajax请求
+        Materialize.toast('正在ajax请求更新信息', 3000, 'rounded');
+        //ajax验证，提交表单数据
+        var data = {
+            "id":[[${customer.id}]],
+            "headImg":[[${customer.headImg}]],
+            "name":$("#name").val(),
+            "sex":$("#sex option:selected").val(),
+            "birthDate":$("#birthDate").val(),
+            "province":$("#province").val(),
+            "city":$("#city").val(),
+            "address":$("#address").val(),
+            "email":$("#email").val(),
+            "phoneNumber":$("#phoneNumber").val(),
+            "password":$("#password").val()
+        };
+        var id=[[${customer.id}]];
+        var url = '/customer/update/'.concat(id.toString());
+        $.ajax({
+            type: 'POST',//方法类型
+            dataType: "json",//预期服务器返回的数据类型
+            url: url,
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(data),
+            success: function (result) {
+                if (result.statusCode === 200) {
+                    Materialize.toast(result.message, 3000, 'rounded');
+                    window.location.href="/customer/".concat(id.toString());
+                } else {
+                    swal(result.message, {
+                        icon: "error",
+                    });
+                }
+                ;
+            },
+            error: function () {
+                swal("数据库异常，请重试", {
+                    icon: "error",
+                });
+            }
+        });
+
+
+    }
+
+
+
+    //通过name来删除cookie，设置过期时间为负时间即可
+    function clearCookieByKey(name) {
+        var exp = new Date();
+        exp.setTime(exp.getTime()-1);
+        document.cookie = name + "=" + escape("") + ";expires=" + exp.toGMTString() + ";path=/";
+        window.location.href = '/index';
+    }
+</script>
+</html>
