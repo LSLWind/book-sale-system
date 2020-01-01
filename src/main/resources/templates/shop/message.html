@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>消息管理</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+<!--顶部导航-->
+<nav class="light-blue accent-1">
+    <div class="nav-wrapper ">
+        <!--左侧logo-->
+        <a href="#!" class="brand-logo blue-text  ">LSL</a>
+        <ul class="hide-on-med-and-down col right">
+            <li><a href="/shop">仓库管理</a></li>
+            <li><a th:href="'/shop/'+${shop.id}+'/orderManage'">订单管理</a></li>
+            <li><a href="#!">用户管理</a></li>
+            <li><a href="#!">消息管理</a> </li>
+            <li><a href="https://github.com/LSLWind/book-sale-system">GitHub地址</a></li>
+            <li><a href="#!">项目详细文档</a></li>
+
+            <li>
+                <a class="dropdown-button" href="#!" data-activates="dropdown1">
+                    <img class="responsive-img circle " th:src="@{${shop.headImg}}" style="width: 50px;height: 50px">
+                    <i class="material-icons right">arrow_drop_down</i></a>
+            </li>
+        </ul>
+        <ul id="dropdown1" class="dropdown-content" >
+            <li><a th:href="'/customer/'+${shop.id}">店铺信息</a></li>
+            <li><a onclick="#!">退出登录</a></li><!--退出登录时清除token即可-->
+        </ul>
+    </div>
+</nav>
+
+
+<!--消息列表显示-->
+<div class="container">
+    <div class="card-panel">
+        <div class="section">
+            用户消息管理  <i class="material-icons">comment</i>
+        </div>
+        <div class="divider"></div>
+        <div th:each="m:${messageCustomerMap}">
+            <div class="section" th:onclick="toChatServer([[${m.value.id}]])">
+                <div class="row"><!--显示消息-->
+                    <div class="col s12"><a href="#!user"><img class="circle" th:src="@{${m.value.headImg}}" style="width: 50px;height:50px;"></a><span th:text="${m.value.name}"></span></div>
+                    <div class="col s9"><div th:text="${m.key.content}"></div></div>
+                    <div class="col s3"><div th:text="${m.key.date}"></div><span class="new badge red">*</span> </div>
+                </div>
+            </div>
+            <div class="divider"></div>
+        </div>
+    </div>
+</div>
+
+</body>
+<!--JQuery必须引入-->
+<script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
+<script th:inline="javascript">
+    $(".dropdown-button").dropdown();
+    $(document).ready(function() {
+        $('select').material_select();
+    });
+    function toChatServer(customerId) {
+        window.location.href="/shop/chat/"+[[${shop.id}]]+'/'+customerId;
+    }
+</script>
+</html>

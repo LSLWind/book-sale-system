@@ -90,8 +90,8 @@ public class BookController {
 
         //根据图书id注入仓库信息
         //TODO 多商店，根据商店与bookID注入仓库
-        //注入缓存中的图书数量
-        Depository depository=new Depository();
+        //获取仓库数据，数量改为注入缓存中的图书数量
+        Depository depository=depositoryService.getDepositoryByBookId(bookId);
         depository.setCount(DepositoryCacheUnit.getBookCountById(bookId));
         model.addAttribute("depository",depository);
 

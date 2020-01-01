@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>lsl书城</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+<!--顶部导航-->
+<nav class="light-blue accent-1">
+    <div class="nav-wrapper ">
+        <!--左侧logo-->
+        <a href="#!" class="brand-logo blue-text  ">LSL</a>
+        <ul class="hide-on-med-and-down col right">
+            <li><a href="/shop">仓库管理</a></li>
+            <li><a th:href="'/shop/'+${shop.id}+'/orderManage'">订单管理</a></li>
+            <li><a href="#!">用户管理</a></li>
+            <li><a href="/shop/chat/message">消息管理</a> </li>
+            <li><a href="https://github.com/LSLWind/book-sale-system">GitHub地址</a></li>
+            <li><a href="#!">项目详细文档</a></li>
+
+            <li >
+                <a class="dropdown-button" href="#!" data-activates="dropdown1">
+                    <img class="responsive-img circle " th:src="@{${shop.headImg}}" style="width: 50px;height: 50px">
+                    <i class="material-icons right">arrow_drop_down</i></a>
+            </li>
+        </ul>
+        <ul id="dropdown1" class="dropdown-content" >
+            <li><a th:href="'/customer/'+${shop.id}">店铺信息</a></li>
+            <li><a onclick="#!">退出登录</a></li><!--退出登录时清除token即可-->
+        </ul>
+    </div>
+</nav>
+
+
+
+<!--仓库信息-->
+<div class="row container">
+    <!--中间仓库信息列表-->
+    <div class="col s12">
+        <div class="card-panel">
+            <div class="section">
+                <h4>仓库列表 <i class="material-icons">turned_in</i></h4>
+            </div>
+            <div class="divider"></div>
+            <div th:each="depository:${depositoryList}"><!--th:each="depository:${shop}"-->
+                <div class="section">
+                    <div class="row">
+                        <div class="col s6"><p th:inline="text">[[${depository.depositoryName}]]<i class="material-icons left">clear_all</i></p></div>
+                        <div class="col s3">创建日期：<p th:text="${depository.createDate}"></p> </div>
+                        <!--进行编辑-->
+                        <a class="col s3 btn" th:href="'/shop/depository/'+${depository.shopId}+'/'+${depository.depositoryName}">查看详情</a>
+                    </div>
+                </div>
+                <div class="divider"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+<!--JQuery必须引入-->
+<script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
+<script>
+
+    $(".dropdown-button").dropdown();
+    function addToCart(bookId,bookName,bookPrice,bookImgs) {
+        //先判断用户是否登录
+        obj = document.getElementById("loginButton");
+        if(obj!=null){
+            window.location.href="/customer/loginPage";
+        }else {
+            //将书加入购物车，异步ajax请求
+            Materialize.toast('正在ajax请求加入购物车', 3000, 'rounded');
+
+            var customerId=[[${customer==null?0:customer.id}]];
+
+            //ajax验证，提交表单数据
+            var data = {
+                "bookId": bookId,
+                "customerId": customerId,
+                "bookName": bookName,
+                "bookPrice":bookPrice,
+                "bookImg":bookImgs,
+                "count": "1",
+            };
+            var url = '/cart/add';
+            $.ajax({
+                type: 'POST',//方法类型
+                dataType: "json",//预期服务器返回的数据类型
+                url: url,
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(data),
+                success: function (result) {
+                    if (result.statusCode === 200) {
+                        Materialize.toast('添加成功', 3000, 'rounded');
+                    } else {
+                        swal(result.message, {
+                            icon: "error",
+                        });
+                    }
+                    ;
+                },
+                error: function () {
+                    swal("数据库异常，请重试", {
+                        icon: "error",
+                    });
+                }
+            });
+        }
+    }
+
+</script>
+</html>

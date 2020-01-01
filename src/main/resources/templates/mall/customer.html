@@ -14,7 +14,7 @@
         <a href="#!" class="brand-logo blue-text  ">LSL</a>
         <ul class="hide-on-med-and-down col right">
             <li><a href="/">首页</a></li>
-            <li><a href="#!">出售图书</a></li>
+            <li><a href="/shop">出售图书</a></li>
             <li><a href="https://github.com/LSLWind/book-sale-system">GitHub地址</a></li>
             <li><a href="#!">项目详细文档</a></li>
 
@@ -30,6 +30,7 @@
         <ul id="dropdown1" class="dropdown-content" th:if="${customer!=null}">
             <li><a th:href="'/cart/'+${customer.id}">购物车</a></li>
             <li><a th:href="'/customer/'+${customer.id}">个人中心</a></li>
+            <li><a th:href="'/chat/'+${customer.id}">消息中心</a></li>
             <li><a onclick="clearCookieByKey('token')">退出登录</a></li><!--退出登录时清除token即可-->
         </ul>
 
@@ -69,10 +70,25 @@
             我的订单  <i class="material-icons">comment</i>
         </div>
         <div class="divider"></div>
-        <div class="section">
-            订单信息  <i class="material-icons">comment</i>
+        <div th:each="order:${unFinishedOrderList}">
+            <div class="section">
+                <div class="row">
+                    <div class="col s9">
+                        <div class="row">
+                            <div class="col s4">名称：<div th:text="${order.bookName}"></div> </div>
+                            <div class="col s4">价格：<div  th:text="${order.bookPrice}"></div> </div>
+                            <div class="col s4">数量：<div  th:text="${order.count}"></div></div>
+                            <div class="col s4">状态：<div th:text="${order.state}"></div></div>
+                        </div>
+                    </div>
+                    <div class="col s3">
+                        <a class="waves-effect waves-light btn" th:onclick="finishOrder([[${order.id}]])">确认收货</a>
+                    </div>
+                </div>
+            </div>
+            <div class="divider"></div>
         </div>
-        <div class="divider"></div>
+
     </div>
 </div>
 
@@ -88,6 +104,30 @@
         exp.setTime(exp.getTime()-1);
         document.cookie = name + "=" + escape("") + ";expires=" + exp.toGMTString() + ";path=/";
         window.location.href = '/index';
+    }
+
+    function finishOrder(orderId) {
+        var url = '/customer/order/stateUpdate/'+orderId.toString();
+        var id=[[${customer.id}]];
+        Materialize.toast("正在处理", 5000, 'rounded');
+        $.ajax({
+            type: 'POST',//方法类型
+            dataType: "json",//预期服务器返回的数据类型
+            url: url,
+            contentType: "application/json; charset=utf-8",
+            data: null,
+            success: function (result) {
+                if(result.statusCode===200){
+                    window.location.href="/customer/".concat(id.toString());
+                }
+                Materialize.toast(result.message, 5000, 'rounded');
+            },
+            error: function () {
+                swal("数据库异常，请重试", {
+                    icon: "error",
+                });
+            }
+        });
     }
 </script>
 </html>

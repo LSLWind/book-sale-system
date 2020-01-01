@@ -14,7 +14,7 @@
         <a href="#!" class="brand-logo blue-text  ">LSL</a>
         <ul class="hide-on-med-and-down col right">
             <li><a href="/">首页</a></li>
-            <li><a href="#!">出售图书</a></li>
+            <li><a href="/shop">出售图书</a></li>
             <li><a href="https://github.com/LSLWind/book-sale-system">GitHub地址</a></li>
             <li><a href="#!">项目详细文档</a></li>
 
@@ -30,6 +30,7 @@
         <ul id="dropdown1" class="dropdown-content" th:if="${customer!=null}">
             <li><a th:href="'/cart/'+${customer.id}">购物车</a></li>
             <li><a th:href="'/customer/'+${customer.id}">个人中心</a></li>
+            <li><a th:href="'/chat/'+${customer.id}">消息中心</a></li>
             <li><a onclick="clearCookieByKey('token')">退出登录</a></li><!--退出登录时清除token即可-->
         </ul>
 
@@ -82,7 +83,7 @@
                             </div>
                             <div class="row">
                                 <a class="waves-effect waves-light btn col s4" th:href="'/book/'+${book.id}">查看详情</a>
-                                <a class="waves-effect waves-light btn col s4" th:name-id="${book.name}" th:imgs-id="${book.imgs}" th:onclick="'javascript:addToCart('+${book.id}+','+this.getAttribute('name-id')+','+${book.discountPrice}+','+this.getAttribute('imgs-id')+')'">加入购物车</a>
+                                <a class="waves-effect waves-light btn col s4" th:onclick="addToCart([[${book.id}]],[[${book.name}]],[[${book.discountPrice}]],[[${book.imgs}]])">加入购物车</a>
                                 <a class="waves-effect waves-light btn col s4" th:if="${customer!=null}" th:href="'/book/order/'+${customer.id}+'/'+${book.id}">立即购买</a>
                                 <a class="waves-effect waves-light btn col s4" th:if="${customer==null}" href="/customer/loginPage">购买请登录</a>
                             </div>

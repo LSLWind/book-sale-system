@@ -10,4 +10,6 @@ public interface BookService {
     List<Book> getBookListByChannelId(int channelId);
 
     Book getBookById(long id);
+
+    void insertOneBook(Book book);
 }

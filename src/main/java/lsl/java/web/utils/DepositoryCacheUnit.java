@@ -88,11 +88,29 @@ public class DepositoryCacheUnit {
      * Mysql update时会加上行级别的排它锁，但是对于条件查询来说是先select的，因此仍要加锁
      * @param bookId 书籍id
      */
-    private static void updateDepositoryByBooId(long bookId,int count){
+    public static void updateDepositoryByBooId(long bookId,int count){
         Lock lock=new ReentrantLock();
         lock.lock();
         try{
             depositoryService.updateDepositoryByBookId(bookId,count);
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            lock.unlock();
+        }
+    }
+
+    /**
+     * 更新仓库缓存数据，因为未使用concurrentHashMap，因此必须显示加锁
+     */
+    public static void updateDepositoryCacheByBookId(long bookId,int count){
+       Lock lock=new ReentrantLock();
+       lock.lock();
+        try {
+            //试图更新一个不存在于缓存中的数据则不用管
+            if(!depositoryMap.containsKey(bookId))return ;
+            //否则覆盖更新缓存数据
+            depositoryMap.put(bookId,count);
         }catch (Exception e){
             e.printStackTrace();
         }finally {

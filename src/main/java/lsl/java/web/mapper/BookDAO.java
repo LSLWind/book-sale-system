@@ -42,5 +42,11 @@ public interface BookDAO {
     @ResultMap("book")
     Book getBookById(long id);
 
+    @Insert("insert into book(channel_id,name,author,price,price_discount,content,category,imgs,press_date,print_date" +
+            ",press,one_type,page_count,words,ISBN) values(#{channelId},#{name},#{author},#{price},#{discountPrice},#{content},#{category}," +
+            "#{imgs},#{pressDate},#{printDate},#{press},#{oneType},#{pageCount},#{words},#{ISBN})")
+    @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
+    void insertOneBook(Book book);
+
 
 }

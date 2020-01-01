@@ -2,43 +2,44 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>NewBee商城-注册</title>
-    <link rel="stylesheet" href="../../static/mall/css/header.css">
-    <link rel="stylesheet" href="../../static/mall/css/common.css">
-    <link rel="stylesheet" href="../../static/mall/css/login.css">
+    <title>lsl商城-登录</title>
+    <link rel="stylesheet" href="/mall/css/header.css">
+    <link rel="stylesheet" href="/mall/css/common.css">
+    <link rel="stylesheet" href="/mall/css/login.css">
     <link href="https://cdn.bootcss.com/sweetalert/1.1.2/sweetalert.css" rel="stylesheet">
 </head>
 <body>
+
 <div class="form center" style="padding-top: 7%;padding-right: 40%">
     <div class="login">
         <div class="login_center">
             <div class="login_top">
                 <div class="left fl">注册</div>
-                <div class="right fr">您已有账号？<a href="./login.html" target="_self">请登录</a></div>
+                <div class="right fr">已有账号？<a href="/customer/registerPage" target="_self">立即登录</a></div>
                 <div class="clear"></div>
                 <div class="under-line center"></div>
             </div>
-            <form id="registerForm" onsubmit="return false;" action="##">
+            <form id="loginForm" onsubmit="return false;" action="##">
                 <div class="login_main center">
                     <div class="login-info">手机号:&nbsp;<input class="login-info-input" type="text" name="loginName"
-                                                             placeholder="请输入你的手机号" id="loginName"/>
+                                                             id="loginName"
+                                                             placeholder="请输入手机号--测试13849720276"/>
                     </div>
                     <div class="login-info">密&nbsp;&nbsp;&nbsp;&nbsp;码:&nbsp;<input class="login-info-input"
+                                                                                    id="password"
                                                                                     type="password"
                                                                                     name="password"
-                                                                                    id="password"
-                                                                                    placeholder="请输入你的密码"/>
-                    </div>
+                                                                                    placeholder="请输入密码--测试123456"/></div>
                     <div class="login-info">
                         验证码:&nbsp;
-                        <input class="login-info-input verify-code" type="text" name="verifyCode" id="verifyCode"
-                               placeholder="请输入验证码"/>
+                        <input class="login-info-input verify-code" type="text" name="verifyCode"
+                               placeholder="请输入验证码" id="verifyCode"/>
                         <img alt="单击图片刷新！" style="top: 14px;position: relative;" th:src="@{/common/mall/kaptcha}"
                              onclick="this.src='/common/mall/kaptcha?d='+new Date()*1">
                     </div>
                 </div>
                 <div class="login_submit">
-                    <input class="submit" type="button" onclick="register()" value="立即注册">
+                    <input class="submit" type="submit" onclick="login()" value="立即注册">
                 </div>
             </form>
         </div>
@@ -47,53 +48,41 @@
 </body>
 <!-- jQuery -->
 <script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
-<script src="../../static/mall/js/public.js" ></script>
+<script src="/mall/js/public.js" ></script>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script type="text/javascript">
-
-    //注册按钮onclick事件改为register()即可
-    function register() {
+    function login() {
         var loginName = $("#loginName").val();
-        if (!validPhoneNumber(loginName)) {
-            swal('请输入正确的登录名(即手机号)', {
-                icon: "error",
-            });
-            return false;
-        }
         var password = $("#password").val();
         if (!validPassword(password)) {
-            swal('请输入正确的密码格式(6-20位字符和数字组合)', {
+            swal('请输入正确的密码格式(6-18位字符和数字组合)', {
                 icon: "error",
             });
             return false;
         }
         var verifyCode = $("#verifyCode").val();
-        if (!validLength(verifyCode, 7)) {
-            swal('请输入正确的验证码', {
-                icon: "error",
-            });
-            return false;
-        }
-        //验证
-        var params = $("#registerForm").serialize();
-        var url = '/register';
+
+        //ajax验证，提交表单数据
+        var data = {"loginName": loginName, "password": password,"verifyCode":verifyCode};
+        var url = '/customer/register/lsl';
         $.ajax({
             type: 'POST',//方法类型
+            dataType: "json",//预期服务器返回的数据类型
             url: url,
-            data: params,
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(data),
             success: function (result) {
-                if (result.resultCode == 200) {
-                    window.location.href = '/login';;
+                if (result.statusCode === 200) {
+                    window.location.href = '/customer/loginPage';
                 } else {
                     swal(result.message, {
-                        icon: "error",
+                        icon: "error"
                     });
                 }
-                ;
             },
             error: function () {
-                swal("操作失败", {
-                    icon: "error",
+                swal("数据库异常，请重试", {
+                    icon: "error"
                 });
             }
         });

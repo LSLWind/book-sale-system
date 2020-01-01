@@ -14,7 +14,7 @@
         <a href="/" class="brand-logo blue-text  ">LSL</a>
         <ul class="hide-on-med-and-down col right">
             <li><a th:href="'/'">首页</a></li>
-            <li><a href="#!">出售图书</a></li>
+            <li><a href="/shop">出售图书</a></li>
             <li><a href="https://github.com/LSLWind/book-sale-system">GitHub地址</a></li>
             <li><a href="#!">项目详细文档</a></li>
 
@@ -30,6 +30,7 @@
         <ul id="dropdown1" class="dropdown-content"  th:if="${customer!=null}">
             <li><a th:href="'/cart/'+${customer.id}">购物车</a></li>
             <li><a th:href="'/customer/'+${customer.id}">个人中心</a></li>
+            <li><a th:href="'/chat/'+${customer.id}">消息中心</a></li>
             <li><a onclick="clearCookieByKey('token')">退出登录</a></li><!--退出登录时清除token即可-->
         </ul>
 
@@ -136,12 +137,12 @@
                         <div class="row">
                             <div class="input-field col s12">
                                 <i class="material-icons prefix">mode_edit</i>
-                                <textarea id="textarea1" class="materialize-textarea"></textarea>
-                                <label for="textarea1">请输入...</label>
+                                <textarea id="comment" class="materialize-textarea"></textarea>
+                                <label for="comment">请输入...</label>
                             </div>
                         </div>
                         <div>
-                            <a class="waves-effect waves-light btn ">发表评论</a>
+                            <a class="waves-effect waves-light btn " onclick="submitComment()">发表评论</a>
                         </div>
                     </form>
                 </div>
@@ -167,7 +168,7 @@
             //将书加入购物车，异步ajax请求
             Materialize.toast('正在ajax请求加入购物车', 3000, 'rounded');
 
-            var customerId=/*[[${customer==null?0:customer.id}]]*/ null;
+            var customerId=[[${customer==null?0:customer.id}]];
 
             //ajax验证，提交表单数据
             var data = {
@@ -176,7 +177,7 @@
                 "bookName": [[${book.name}]],
                 "bookPrice": [[${book.discountPrice}]],
                 "bookImg":[[${book.imgs}]],
-                "count": "1",
+                "count": "1"
             };
             var url = '/cart/add';
             $.ajax({
@@ -209,6 +210,52 @@
         var exp = new Date();
         exp.setTime(exp.getTime()-1);
         document.cookie = name + "=" + escape("") + ";expires=" + exp.toGMTString() + ";path=/";
+    }
+
+    /**
+     * 发表评论
+     */
+    function submitComment() {
+        //先判断用户是否登录
+        if( document.getElementById("loginButton")!=null){
+            window.location.href="/customer/loginPage";
+        }else {
+            //发表评论，获取用户信息
+            var customerId=[[${customer==null?0:customer.id}]];
+            var customerName=[[${customer==null?0:customer.name}]];
+            var customerHeadImg=[[${customer==null?0:customer.headImg}]];
+            //ajax验证，提交表单数据
+            var data = {
+                "bookId": [[${book.id}]],
+                "customerId": customerId,
+                "customerName": customerName,
+                "customerHeadImg":customerHeadImg,
+                "content":$("#comment").val()
+            };
+            var url = "/customer/comment/add/"+customerId;
+            var bookId=[[${book.id}]];
+            $.ajax({
+                type: 'POST',//方法类型
+                dataType: "json",//预期服务器返回的数据类型
+                url: url,
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(data),
+                success: function (result) {
+                    if (result.statusCode === 200) {
+                        window.location.href='/book/'+bookId;
+                    } else {
+                        swal(result.message, {
+                            icon: "error",
+                        });
+                    }
+                },
+                error: function () {
+                    swal("数据库异常，请重试", {
+                        icon: "error"
+                    });
+                }
+            });
+        }
     }
 
 </script>

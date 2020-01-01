@@ -1,6 +1,7 @@
 package lsl.java.web.mapper;
 
 import lsl.java.web.entity.Customer;
+import lsl.java.web.entity.LoginForm;
 import org.apache.ibatis.annotations.*;
 
 @Mapper
@@ -28,4 +29,11 @@ public interface CustomerDAO {
             "province=#{province},city=#{city},address=#{address},e_mail=#{email},phone_number=#{phoneNumber}," +
             "password=#{password} where id=#{id}")
     int updateCustomerInfoById(Customer customer);
+
+    @Select("select * from customer where id=#{customerId}")
+    @ResultMap("customer")
+    Customer getCustomerByCustomerId(long customerId);
+
+    @Insert("insert into customer(phone_number,password,name) values(#{loginName},#{password},'用户')")
+    int insertOneCustomerByPhoneNumber(LoginForm loginForm);
 }

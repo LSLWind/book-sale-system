@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+
+    <title>lsl聊天室</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            min-height: 100vh;
+            flex-direction: column;
+        }
+        main {
+            flex: 1 0 auto;
+        }
+    </style>
+</head>
+
+<body onload="initSocket()">
+<!--顶部导航-->
+<nav class="light-blue accent-1">
+    <div class="nav-wrapper ">
+        <!--左侧logo-->
+        <a href="#!" class="brand-logo blue-text  ">LSL</a>
+        <ul class="hide-on-med-and-down col right">
+            <li><a href="#!">首页</a></li>
+            <li><a href="/shop">出售图书</a></li>
+            <li><a href="https://github.com/LSLWind/book-sale-system">GitHub地址</a></li>
+            <li><a href="#!">项目详细文档</a></li>
+
+            <li th:if="${customer!=null}">
+                <a class="dropdown-button" href="#!" data-activates="dropdown1">
+                    <img class="responsive-img circle " th:src="@{${customer.headImg}}" style="width: 50px;height: 50px">
+                    <i class="material-icons right">arrow_drop_down</i></a>
+            </li>
+            <li th:if="${customer==null}">
+                <a class="waves-effect waves-light btn" th:href="'/customer/loginPage'">登录/注册</a>
+            </li>
+        </ul>
+        <ul id="dropdown1" class="dropdown-content" th:if="${customer!=null}">
+            <li><a th:href="'/cart/'+${customer.id}">购物车</a></li>
+            <li><a th:href="'/customer/'+${customer.id}">个人中心</a></li>
+            <li><a th:href="'/chat/'+${customer.id}">消息中心</a></li>
+            <li><a onclick="clearCookieByKey('token')">退出登录</a></li><!--退出登录时清除token即可-->
+        </ul>
+
+        <!--顶部分类频道-->
+        <ul class="hide-on-med-and-down col right" th:each="channel:${channelList}">
+            <li><a th:href="'/channel/'+${channel.getId()}" th:text="${channel.name}"></a></li>
+        </ul>
+
+    </div>
+</nav>
+<main>
+    <div id="history" class="container">
+        <!--历史消息显示框-->
+        <div th:each="message:${messageList}">
+            <!--用户向商店发信息-->
+            <div th:if="${message.isToShop eq 1}">
+                <div class="row">
+                    <div class="col s12"><a href="#!user"><img class="circle" th:src="@{${customer.headImg}}" style="width: 50px;height:50px;"></a><span th:text="${customer.name}"></span></div>
+                    <div class="col s11 offset-s1"><div th:text="${message.content}+'        ('+${message.date}+')'"></div></div>
+                </div>
+            </div>
+            <div th:if="${message.isToShop ne 1}">
+                <div class="row right">
+                    <div class="col s12"><span th:text="${shop.name}"></span><a href="#!user"><img class="circle" th:src="@{${shop.headImg}}" style="width: 50px;height:50px;"></a></div>
+                    <div class="col s12" th:text="${message.content}+'        ('+${message.date}+')'"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer class="page-footer white">
+    <div class="container">
+        <div class="row">
+            <form class="col s12">
+                <div class="row">
+                    <div class="input-field col s10">
+                        <i class="material-icons prefix">mode_edit</i>
+                        <textarea id="message" class="materialize-textarea"></textarea>
+                        <label for="message">请输入...</label>
+                    </div>
+                    <div class="col s2">
+                        <a class="waves-effect waves-light btn " onclick="send()">发送</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</footer>
+</body>
+
+<!--JQuery必须引入-->
+<script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
+<script type="application/javascript" th:inline="javascript">
+    //加载组件
+    $(".dropdown-button").dropdown();
+    $(document).ready(function() {
+        $('select').material_select();
+    });
+
+    //全局websocket对象
+    var socket ;
+    //全局资源对象
+    var customerHeadImg=[[${customer.headImg}]];
+    var customerName=[[${customer.name}]];
+    var shopHeadImg=[[${shop.headImg}]];
+    var shopName=[[${shop.name}]];
+
+    //初始化socket连接，页面加载时就执行
+    function initSocket() {
+        //判断浏览器是否支持WebSocket
+        if(typeof(WebSocket) == "undefined") {
+            console.log("您的浏览器不支持WebSocket");
+        }
+        var userId=[[${customer.id}]];//获取用户id
+        var shopId=[[${shop.id}]];//获取商店id
+        //socket连接地址: 注意是ws协议，直接与指定WebSocket建立连接
+        socket = new WebSocket("ws://localhost:8080/lsl/chat/"+userId+'/'+shopId+'/1');//客户向商店发送消息
+        socket.onopen = function() {
+            console.log("Socket 已打开");
+        };
+        //获得消息事件
+        socket.onmessage = function(msg) {
+            //将websocket server 返回来的message进行反序列化处理
+            var message=JSON.parse(msg.data);
+            //前端变更文本
+            var html=document.getElementById("history").innerHTML;
+            if(message.isToShop===1){//用户向商家发送消息
+                $("#history").html(//直接更改一直的html内容文本
+                    html+
+                    "<div class='row'>\n" +
+                    "<div class='col s12'><a href=''#!user'><img class='circle' src="+customerHeadImg+" style='width: 50px;height:50px;'></a><span>"+customerName+"</span></div>\n" +
+                    "<div class='col s11 offset-s1'><div>"+message.content+"("+message.date+")"+"</div></div>\n" +
+                    "</div>");
+            }else {
+                $("#history").html(
+                    html+
+                    "<div class='row right'>\n" +
+                    "<div class='col s12'><a href=''#!user'><img class='circle' src="+shopHeadImg+" style='width: 50px;height:50px;'></a><span>"+shopName+"</span></div>\n" +
+                    "<div class='col s12'><div>"+message.content+"("+message.date+")"+"</div></div>\n" +
+                    "</div>");
+            }
+            $("#message").val("");//清空input中的内容
+
+        };
+        //关闭事件
+        socket.onclose = function() {
+            console.log("Socket已关闭");
+        };
+        //错误事件
+        socket.onerror = function() {
+            alert("Socket发生了错误");
+        };
+        $(window).unload(function(){
+            socket.close();
+        });
+    }
+    //点击按钮发送消息
+    function send() {
+        console.log("发送消息: "+$("#message").val());
+        socket.send($("#message").val());//调用websocket的方法发送信息
+    }
+
+
+    //通过name来删除cookie，设置过期时间为负时间即可
+    function clearCookieByKey(name) {
+        var exp = new Date();
+        exp.setTime(exp.getTime()-1);
+        document.cookie = name + "=" + escape("") + ";expires=" + exp.toGMTString() + ";path=/";
+        window.location.href = '/index';
+    }
+</script>
+</html>
+

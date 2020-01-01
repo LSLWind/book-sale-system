@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>lsl书城--订单管理</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+<!--顶部导航-->
+<nav class="light-blue accent-1">
+    <div class="nav-wrapper ">
+        <!--左侧logo-->
+        <a href="#!" class="brand-logo blue-text  ">LSL</a>
+        <ul class="hide-on-med-and-down col right">
+            <li><a href="/shop/index">仓库管理</a></li>
+            <li><a th:href="'/shop/'+${shop.id}+'/orderManage'">订单管理</a></li>
+            <li><a href="#!">用户管理</a></li>
+            <li><a href="/shop/chat//message">消息管理</a> </li>
+            <li><a href="https://github.com/LSLWind/book-sale-system">GitHub地址</a></li>
+            <li><a href="#!">项目详细文档</a></li>
+
+            <li >
+                <a class="dropdown-button" href="#!" data-activates="dropdown1">
+                    <img class="responsive-img circle " th:src="@{${shop.headImg}}" style="width: 50px;height: 50px">
+                    <i class="material-icons right">arrow_drop_down</i></a>
+            </li>
+        </ul>
+        <ul id="dropdown1" class="dropdown-content" >
+            <li><a th:href="'/customer/'+${shop.id}">店铺信息</a></li>
+            <li><a onclick="#!">退出登录</a></li><!--退出登录时清除token即可-->
+        </ul>
+    </div>
+</nav>
+
+
+
+<!--订单列表信息-->
+<div class="row container">
+    <!--未处理列表-->
+    <div class="col s12">
+        <div class="card-panel">
+            <div class="section">
+                <div class="row">
+                    <div class="col s6">
+                        <h4>待处理订单列表 <i class="material-icons">turned_in</i></h4>
+                    </div>
+                </div>
+            </div>
+            <div class="divider"></div>
+            <div th:each="orderMap:${unFinishOrderMap}">
+                <div class="section">
+                    <div class="row" ><!--具体的仓库，由商店id与仓库名称标识，商品数据-->
+                        <div class="col s6">
+                            <div class="row">
+                                <div class="col s4">名称：<p th:text="${orderMap.key.bookName}"></p> </div>
+                                <div class="col s4">价格：<p th:text="${orderMap.key.bookPrice}"></p> </div>
+                                <div class="col s4">数量：<p th:text="${orderMap.key.count}"></p></div>
+                                <div class="col s4">状态：<p th:text="${orderMap.key.state}"></p></div>
+                                <div class="col s4">客户：<p th:text="${orderMap.value.name}"></p></div>
+                                <div class="col s4">地址：<p th:text="${orderMap.value.province}+${orderMap.value.city}+${orderMap.value.address}"></p></div>
+                            </div>
+                        </div>
+                        <div class="col s3">
+                            <!--商家更新状态信息-->
+                            <a th:if="${orderMap.key.state} eq '已发货'" class="btn">已发货</a>
+                            <a th:if="${orderMap.key.state} eq '未发货'" class="btn" th:onclick="updateOrder([[${orderMap.key.id}]])">设置为已发货</a>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="divider"></div>
+            </div>
+        </div>
+    </div>
+    <!--以处理订单列表-->
+    <div class="col s12">
+        <div class="card-panel">
+            <div class="section">
+                <div class="row">
+                    <div class="col s6">
+                        <h4>已处理订单列表 <i class="material-icons">turned_in</i></h4>
+                    </div>
+                </div>
+            </div>
+            <div class="divider"></div>
+            <div th:each="orderMap:${finishOrderMap}">
+                <div class="section">
+                    <div class="row" ><!--具体的仓库，由商店id与仓库名称标识，商品数据-->
+                        <div class="col s9">
+                            <div class="row">
+                                <div class="col s4">名称：<p th:text="${orderMap.key.bookName}"></p> </div>
+                                <div class="col s4">价格：<p th:text="${orderMap.key.bookPrice}"></p> </div>
+                                <div class="col s4">数量：<p th:text="${orderMap.key.count}"></p></div>
+                                <div class="col s4">状态：<p th:text="${orderMap.key.state}"></p></div>
+                                <div class="col s4">客户：<p th:text="${orderMap.value.name}"></p></div>
+                                <div class="col s4">地址：<p th:text="${orderMap.value.province}+${orderMap.value.city}+${orderMap.value.address}"></p></div>
+                            </div>
+                        </div>
+                        <div class="col s3">
+                            <a class="btn">该订单已完成</a>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="divider"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+<!--JQuery必须引入-->
+<script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
+<script>
+
+    $(".dropdown-button").dropdown();
+    function updateOrder(orderId) {
+        var url = '/shop/order/stateUpdate/'+orderId.toString();
+        var id=[[${shop.id}]];
+        Materialize.toast("正在处理", 5000, 'rounded');
+        $.ajax({
+            type: 'POST',//方法类型
+            dataType: "json",//预期服务器返回的数据类型
+            url: url,
+            contentType: "application/json; charset=utf-8",
+            data: null,
+            success: function (result) {
+                if(result.statusCode===200){
+                    window.location.href="/shop/".concat(id.toString())+'/orderManage';
+                }
+                Materialize.toast(result.message, 5000, 'rounded');
+            },
+            error: function () {
+                swal("数据库异常，请重试", {
+                    icon: "error",
+                });
+            }
+        });
+    }
+
+</script>
+</html>

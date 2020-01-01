@@ -18,4 +18,9 @@ public class ICommentService implements CommentService {
     public List<Comment> getCommentListByBookId(long bookId){
         return commentDAO.getCommentListByBookId(bookId);
     }
+
+    @Override
+    public int insertComment(Comment comment){
+        return commentDAO.insertComment(comment);
+    }
 }

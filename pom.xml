@@ -84,6 +84,12 @@
             <version>3.8.2</version>
         </dependency>
 
+        <!--websocket聊天室-->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-websocket</artifactId>
+            <version>5.2.1.RELEASE</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -91,6 +97,10 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <!--打包时的必要配置-->
+                <configuration>
+                    <mainClass>lsl.java.web.WebApplication</mainClass>
+                </configuration>
             </plugin>
         </plugins>
     </build>

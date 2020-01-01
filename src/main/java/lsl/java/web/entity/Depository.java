@@ -15,4 +15,5 @@ public class Depository {
     private String shopHeadImg;
     private int count;//存货
     private String createDate;
+    private String depositoryName;
 }

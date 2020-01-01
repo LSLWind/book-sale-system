@@ -1,10 +1,11 @@
 package lsl.java.web.controller.mall;
 
 import lsl.java.web.common.Result;
-import lsl.java.web.entity.Channel;
-import lsl.java.web.entity.Customer;
-import lsl.java.web.entity.LoginForm;
+import lsl.java.web.entity.*;
+import lsl.java.web.service.impl.ICommentService;
 import lsl.java.web.service.impl.ICustomerService;
+import lsl.java.web.service.impl.IOrderService;
+import lsl.java.web.utils.DateUtil;
 import lsl.java.web.utils.InfoCacheUtil;
 import lsl.java.web.utils.TokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,12 @@ public class CustomerController {
 
     @Autowired
     ICustomerService customerService;
+
+    @Autowired
+    ICommentService commentService;
+
+    @Autowired
+    IOrderService orderService;
     /**
      * ajax请求登录
      * @return 后台验证结果
@@ -58,6 +65,37 @@ public class CustomerController {
     }
 
     /**
+     * 请求访问注册页面
+     */
+    @RequestMapping(value = "/registerPage",method = RequestMethod.GET)
+    public String registerPage(){
+        return "mall/register";
+    }
+
+    @RequestMapping("/register/lsl")
+    @ResponseBody
+    public Result postRegister(HttpServletRequest request, @RequestBody LoginForm loginForm){
+        //首先校验验证码
+        String verifyCode=(String) request.getSession().getAttribute("lslVerifyCode");
+        if(!verifyCode.trim().equals(loginForm.getVerifyCode().trim())){
+            return new Result("验证码错误，请重试",Result.CLIENT_ERROR);
+        }
+        //插入用户数据
+        try {
+            Customer customer=customerService.getCustomer(loginForm.getLoginName(),loginForm.getPassword());
+            if(customer!=null)return new Result("该账号已注册！",Result.CLIENT_ERROR);
+            customerService.insertOneCustomerByPhoneNumber(loginForm);
+            customer=customerService.getCustomer(loginForm.getLoginName(),loginForm.getPassword());
+            customer.setName("用户"+customer.getPhoneNumber());
+            customerService.updateCustomerInfoById(customer);
+            return new Result("注册成功",Result.OK);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new Result("数据错误，请检查",Result.SERVER_ERROR);
+        }
+    }
+
+    /**
      * 根据用户id访问个人中心页面，需要根据请求中的token进行一次校验
      * @param customerId 用户id
      */
@@ -75,7 +113,12 @@ public class CustomerController {
 
          //注入用户信息
          model.addAttribute("customer",customer);
-         return "mall/customer";
+
+         //注入个人订单信息，都是未完成订单
+        List<Order> orderList=orderService.getUnFinishedOrderListByCustomerId(customerId);
+        model.addAttribute("unFinishedOrderList",orderList);
+
+        return "mall/customer";
     }
 
     /**
@@ -123,5 +166,47 @@ public class CustomerController {
         }
     }
 
+    /**
+     * 提交用户评论
+     * @param comment 评论的表单数据
+     */
+    @RequestMapping("/comment/add/{customerId}")
+    @ResponseBody
+    public Result submitComment(@RequestBody Comment comment,@PathVariable("customerId")int customerId ){
+        //插入系统当前时间
+        comment.setDate(DateUtil.getCurrentDate());
+        try{
+            if(commentService.insertComment(comment)>=0){
+                return new Result("评论成功，刷新可看",Result.OK);
+            }else {
+                return new Result("插入失败，数据库错误，请重试",Result.SERVER_ERROR);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            return new Result("插入失败，数据库错误，请重试",Result.SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Ajax请求更新订单状态
+     * @param request 请求，用于权鉴
+     * @param orderId 订单id
+     */
+    @RequestMapping("/order/stateUpdate/{orderId}")
+    @ResponseBody
+    public Result updateCustomerOrderState(HttpServletRequest request,@PathVariable("orderId")long orderId){
+        Customer customerCheck= InfoCacheUtil.getCustomerByRequest(request);
+        //用户token校验失败，返回错误信息
+        if(customerCheck==null){
+            return new Result("用户未登录，请登录",Result.CLIENT_ERROR);
+        }
+        try {
+            orderService.finishOrder(orderId);
+            return new Result("更新成功",Result.OK);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new Result("数据库响应失败，请重试",Result.SERVER_ERROR);
+        }
+    }
 
 }

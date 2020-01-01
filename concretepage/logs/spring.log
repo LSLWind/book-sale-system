@@ -1,0 +1,30 @@
+2020-一月-01 15:28:55.354 INFO  [restartedMain] l.j.w.WebApplication - Starting WebApplication on DESKTOP-DF9BL8S with PID 3764 (H:\web\target\classes started by lsl in H:\web)
+2020-一月-01 15:28:55.354 INFO  [restartedMain] l.j.w.WebApplication - No active profile set, falling back to default profiles: default
+2020-一月-01 15:28:55.682 WARN  [restartedMain] o.a.t.u.m.Registry - The MBean registry cannot be disabled because it has already been initialised
+2020-一月-01 15:28:55.729 INFO  [restartedMain] o.s.b.w.e.t.TomcatWebServer - Tomcat initialized with port(s): 8080 (http)
+2020-一月-01 15:28:55.729 INFO  [restartedMain] o.a.c.c.StandardService - Starting service [Tomcat]
+2020-一月-01 15:28:55.729 INFO  [restartedMain] o.a.c.c.StandardEngine - Starting Servlet engine: [Apache Tomcat/9.0.27]
+2020-一月-01 15:28:55.744 INFO  [restartedMain] o.a.c.c.C.[.[.[/] - Initializing Spring embedded WebApplicationContext
+2020-一月-01 15:28:55.744 INFO  [restartedMain] o.s.w.c.ContextLoader - Root WebApplicationContext: initialization completed in 390 ms
+2020-一月-01 15:28:55.869 DEBUG [restartedMain] o.h.v.i.e.r.TraversableResolvers - Cannot find javax.persistence.Persistence on classpath. Assuming non JPA 2 environment. All properties will per default be traversable.
+2020-一月-01 15:28:55.869 DEBUG [restartedMain] o.h.v.m.ResourceBundleMessageInterpolator - Loaded expression factory via original TCCL
+2020-一月-01 15:28:55.869 DEBUG [restartedMain] o.h.v.i.e.r.TraversableResolvers - Cannot find javax.persistence.Persistence on classpath. Assuming non JPA 2 environment. All properties will per default be traversable.
+2020-一月-01 15:28:55.869 DEBUG [restartedMain] o.h.v.i.e.ConfigurationImpl - Setting custom MessageInterpolator of type org.springframework.validation.beanvalidation.LocaleContextMessageInterpolator
+2020-一月-01 15:28:55.869 DEBUG [restartedMain] o.h.v.i.e.ConfigurationImpl - Setting custom ConstraintValidatorFactory of type org.springframework.validation.beanvalidation.SpringConstraintValidatorFactory
+2020-一月-01 15:28:55.869 DEBUG [restartedMain] o.h.v.i.e.ConfigurationImpl - Setting custom ParameterNameProvider of type org.springframework.validation.beanvalidation.LocalValidatorFactoryBean$1
+2020-一月-01 15:28:55.869 DEBUG [restartedMain] o.h.v.i.x.c.ValidationXmlParser - Trying to load META-INF/validation.xml for XML based Validator configuration.
+2020-一月-01 15:28:55.869 DEBUG [restartedMain] o.h.v.i.x.c.ResourceLoaderHelper - Trying to load META-INF/validation.xml via user class loader
+2020-一月-01 15:28:55.869 DEBUG [restartedMain] o.h.v.i.x.c.ResourceLoaderHelper - Trying to load META-INF/validation.xml via TCCL
+2020-一月-01 15:28:55.869 DEBUG [restartedMain] o.h.v.i.x.c.ResourceLoaderHelper - Trying to load META-INF/validation.xml via Hibernate Validator's class loader
+2020-一月-01 15:28:55.869 DEBUG [restartedMain] o.h.v.i.x.c.ValidationXmlParser - No META-INF/validation.xml found. Using annotation based configuration only.
+2020-一月-01 15:28:55.869 DEBUG [restartedMain] o.h.v.i.e.ValidatorFactoryImpl - HV000234: Using org.springframework.validation.beanvalidation.LocaleContextMessageInterpolator as ValidatorFactory-scoped message interpolator.
+2020-一月-01 15:28:55.869 DEBUG [restartedMain] o.h.v.i.e.ValidatorFactoryImpl - HV000234: Using org.hibernate.validator.internal.engine.resolver.TraverseAllTraversableResolver as ValidatorFactory-scoped traversable resolver.
+2020-一月-01 15:28:55.869 DEBUG [restartedMain] o.h.v.i.e.ValidatorFactoryImpl - HV000234: Using org.hibernate.validator.internal.util.ExecutableParameterNameProvider as ValidatorFactory-scoped parameter name provider.
+2020-一月-01 15:28:55.869 DEBUG [restartedMain] o.h.v.i.e.ValidatorFactoryImpl - HV000234: Using org.hibernate.validator.internal.engine.DefaultClockProvider as ValidatorFactory-scoped clock provider.
+2020-一月-01 15:28:55.869 DEBUG [restartedMain] o.h.v.i.e.ValidatorFactoryImpl - HV000234: Using org.hibernate.validator.internal.engine.scripting.DefaultScriptEvaluatorFactory as ValidatorFactory-scoped script evaluator factory.
+2020-一月-01 15:28:55.916 INFO  [restartedMain] o.s.s.c.ThreadPoolTaskExecutor - Initializing ExecutorService 'applicationTaskExecutor'
+2020-一月-01 15:28:56.010 INFO  [restartedMain] o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+2020-一月-01 15:28:56.026 INFO  [restartedMain] o.s.b.w.e.t.TomcatWebServer - Tomcat started on port(s): 8080 (http) with context path ''
+2020-一月-01 15:28:56.026 INFO  [restartedMain] l.j.w.WebApplication - Started WebApplication in 0.856 seconds (JVM running for 1370.508)
+2020-一月-01 15:28:56.026 INFO  [restartedMain] o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation unchanged
+2020-一月-01 15:29:13.189 INFO  [Thread-16] o.s.s.c.ThreadPoolTaskExecutor - Shutting down ExecutorService 'applicationTaskExecutor'

@@ -1,10 +1,7 @@
 package lsl.java.web.mapper;
 
 import lsl.java.web.entity.Comment;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -22,5 +19,10 @@ public interface CommentDAO {
             @Result(column = "content",property = "content")
     })
     List<Comment> getCommentListByBookId(long bookId);
+
+    @Insert("insert into comment(customer_head_img,customer_name,book_id,customer_id,comment_date,content) " +
+            "values (#{customerHeadImg},#{customerName},#{bookId},#{customerId},#{date},#{content})")
+    int insertComment(Comment comment);
+
 
 }

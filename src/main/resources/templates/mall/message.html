@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>lsl消息中心</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+<!--顶部导航-->
+<nav class="light-blue accent-1">
+    <div class="nav-wrapper ">
+        <!--左侧logo-->
+        <a href="#!" class="brand-logo blue-text  ">LSL</a>
+        <ul class="hide-on-med-and-down col right">
+            <li><a href="#!">首页</a></li>
+            <li><a href="/shop">出售图书</a></li>
+            <li><a href="https://github.com/LSLWind/book-sale-system">GitHub地址</a></li>
+            <li><a href="#!">项目详细文档</a></li>
+
+            <li th:if="${customer!=null}">
+                <a class="dropdown-button" href="#!" data-activates="dropdown1">
+                    <img class="responsive-img circle " th:src="@{${customer.headImg}}" style="width: 50px;height: 50px">
+                    <i class="material-icons right">arrow_drop_down</i></a>
+            </li>
+            <li th:if="${customer==null}">
+                <a class="waves-effect waves-light btn" th:href="'/customer/loginPage'">登录/注册</a>
+            </li>
+        </ul>
+        <ul id="dropdown1" class="dropdown-content" th:if="${customer!=null}">
+            <li><a th:href="'/cart/'+${customer.id}">购物车</a></li>
+            <li><a th:href="'/customer/'+${customer.id}">个人中心</a></li>
+            <li><a th:href="'/chat/'+${customer.id}">消息中心</a></li>
+            <li><a onclick="clearCookieByKey('token')">退出登录</a></li><!--退出登录时清除token即可-->
+        </ul>
+
+        <!--顶部分类频道-->
+        <ul class="hide-on-med-and-down col right" th:each="channel:${channelList}">
+            <li><a th:href="'/channel/'+${channel.getId()}" th:text="${channel.name}"></a></li>
+        </ul>
+
+    </div>
+</nav>
+
+
+<!--消息列表显示-->
+<div class="container">
+    <div class="card-panel">
+        <div class="section">
+            我的消息  <i class="material-icons">comment</i>
+        </div>
+        <div class="divider"></div>
+        <div th:each="m:${messageShopMap}">
+            <div class="section" th:onclick="toChat([[${m.value.id}]])">
+                <div class="row"><!--显示消息-->
+                    <div class="col s12"><a href="#!user"><img class="circle" th:src="@{${m.value.headImg}}" style="width: 50px;height:50px;"></a><span th:text="${m.value.name}"></span></div>
+                    <div class="col s9"><div th:text="${m.key.content}"></div></div><!--有未读消息显示标签-->
+                    <div class="col s3"><div th:text="${m.key.date}"></div><span class="new badge red" th:if="${m.key.state==1}">*</span> </div>
+                </div>
+            </div>
+            <div class="divider"></div>
+        </div>
+    </div>
+</div>
+
+</body>
+<!--JQuery必须引入-->
+<script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
+<script th:inline="javascript">
+    $(".dropdown-button").dropdown();
+    $(document).ready(function() {
+        $('select').material_select();
+    });
+    function toChat(shopId) {
+        window.location.href='/chat/'+[[${customer.id}]]+'/'+shopId;//进入聊天界面
+    }
+
+    //通过name来删除cookie，设置过期时间为负时间即可
+    function clearCookieByKey(name) {
+        var exp = new Date();
+        exp.setTime(exp.getTime()-1);
+        document.cookie = name + "=" + escape("") + ";expires=" + exp.toGMTString() + ";path=/";
+        window.location.href = '/index';
+    }
+</script>
+</html>

@@ -14,7 +14,7 @@
         <a href="#!" class="brand-logo blue-text  ">LSL</a>
         <ul class="hide-on-med-and-down col right">
             <li><a href="#!">首页</a></li>
-            <li><a href="#!">出售图书</a></li>
+            <li><a href="/shop">出售图书</a></li>
             <li><a href="https://github.com/LSLWind/book-sale-system">GitHub地址</a></li>
             <li><a href="#!">项目详细文档</a></li>
 
@@ -30,6 +30,7 @@
         <ul id="dropdown1" class="dropdown-content" th:if="${customer!=null}">
             <li><a th:href="'/cart/'+${customer.id}">购物车</a></li>
             <li><a th:href="'/customer/'+${customer.id}">个人中心</a></li>
+            <li><a th:href="'/chat/'+${customer.id}">消息中心</a></li>
             <li><a onclick="clearCookieByKey('token')">退出登录</a></li><!--退出登录时清除token即可-->
         </ul>
 
@@ -116,6 +117,26 @@
                 <div class="collapsible-header"><i class="material-icons">filter_drama</i>2019.12.11</div>
                 <div class="collapsible-body"><p>加入仓库，商店对应多个仓库，仓库对应多个书籍，购买书籍进入订单页面，确认后点击ajax请求处理订单，
                     为加快并发处理速度引入缓存，为保证数据一致性对缓存加锁，写日志保证记录缓存数据，服务器关闭一定写缓存数据到数据库</p></div>
+            </li>
+            <li>
+                <div class="collapsible-header"><i class="material-icons">filter_drama</i>2019.12.13</div>
+                <div class="collapsible-body"><p>购物车页面，购物车移除商品，整体页面整合，初步完成最低可提交阶段</p></div>
+            </li>
+            <li>
+                <div class="collapsible-header"><i class="material-icons">filter_drama</i>2019.12.16</div>
+                <div class="collapsible-body"><p>提交图书评论</p></div>
+            </li>
+            <li>
+                <div class="collapsible-header"><i class="material-icons">filter_drama</i>2019.12.17</div>
+                <div class="collapsible-body"><p>后台商店管理初步</p></div>
+            </li>
+            <li>
+                <div class="collapsible-header"><i class="material-icons">filter_drama</i>2019.12.19</div>
+                <div class="collapsible-body"><p>仓库/图书信息CURD初步，订单状态变化</p></div>
+            </li>
+            <li>
+                <div class="collapsible-header"><i class="material-icons">filter_drama</i>2019.12.20</div>
+                <div class="collapsible-body"><p>用户评论，用户确认收货/商店设置已发货，给予双方信息</p></div>
             </li>
         </ul>
     </div>

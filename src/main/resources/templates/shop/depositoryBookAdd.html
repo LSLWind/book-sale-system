@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>lsl书城--上架图书</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+<!--顶部导航-->
+<nav class="light-blue accent-1">
+    <div class="nav-wrapper ">
+        <!--左侧logo-->
+        <a href="#!" class="brand-logo blue-text  ">LSL</a>
+        <ul class="hide-on-med-and-down col right">
+            <li><a href="/shop/index">仓库管理</a></li>
+            <li><a href="#!">订单管理</a></li>
+            <li><a href="#!">用户管理</a></li>
+            <li><a href="/shop/chat//message">消息管理</a> </li>
+            <li><a href="https://github.com/LSLWind/book-sale-system">GitHub地址</a></li>
+            <li><a href="#!">项目详细文档</a></li>
+
+            <li >
+                <a class="dropdown-button" href="#!" data-activates="dropdown1">
+                    <img class="responsive-img circle " th:src="@{${shop.headImg}}" style="width: 50px;height: 50px">
+                    <i class="material-icons right">arrow_drop_down</i></a>
+            </li>
+        </ul>
+        <ul id="dropdown1" class="dropdown-content" >
+            <li><a th:href="'/customer/'+${shop.id}">店铺信息</a></li>
+            <li><a onclick="#!">退出登录</a></li><!--退出登录时清除token即可-->
+        </ul>
+    </div>
+</nav>
+
+<!--用户信息编辑-->
+<div class="container">
+    <!--顶部个人信息-->
+    <div class="card-panel">
+        <div class="section">
+            <h5>上架图书<i class="material-icons">grade</i></h5>
+        </div>
+        <div class="divider"></div>
+        <div class="section">
+            <div class="row">
+                <div class="col s2">图书照片</div>
+                <div class="col s10">
+                    <form action="#">
+                        <div class="file-field input-field">
+                            <div class="btn">
+                                <span>文件</span>
+                                <input id="imgFile" type="file">
+                            </div>
+                            <div class="file-path-wrapper">
+                                <input class="file-path validate" type="text">
+                            </div>
+                        </div>
+                    </form>
+                    <!--TODO 图片上传-->
+                    <a  class="waves-effect waves-light btn" >点击上传</a>
+                </div>
+            </div>
+        </div>
+        <div class="divider"></div>
+        <div class="section">
+            <div class="row">
+                <div class="col s2"><h6>书名<i class="material-icons prefix">mode_edit</i></h6></div>
+                <div class="col s10">
+                    <input id="name" type="text" class="validate">
+                </div>
+            </div>
+        </div>
+        <div class="divider"></div>
+        <div class="section">
+            <div class="row">
+                <div class="col s2"><h6>所属频道<i class="material-icons prefix">mode_edit</i></h6></div>
+                <div class="col s10 input-field">
+                    <select id="channel">
+                        <option value="1">文学</option>
+                        <option value="2">科幻</option>
+                        <option value="3">少儿</option>
+                        <option value="4">教辅</option>
+                        <option value="5">经管</option>
+                        <option value="6">玄幻</option>
+                        <option value="7">武侠</option>
+                        <option value="8">仙侠</option>
+                        <option value="9">奇幻</option>
+                        <option value="10">娱乐</option>
+                        <option value="11">历史</option>
+                        <option value="12">漫画</option>
+                    </select>
+                    <label>频道</label>
+                </div>
+            </div>
+        </div>
+        <div class="divider"></div>
+        <div class="section">
+            <div class="row">
+                <div class="col s2"><h6>作者<i class="material-icons prefix">mode_edit</i></h6></div>
+                <div class="col s10">
+                    <input  id="author" type="text" class="validate" >
+                </div>
+            </div>
+        </div>
+        <div class="divider"></div>
+        <div class="section">
+            <div class="row">
+                <div class="col s2"><h6>价格<i class="material-icons prefix">mode_edit</i></h6></div>
+                <div class="col s10">
+                    <input  id="price" type="text" class="validate">
+                </div>
+            </div>
+        </div>
+        <div class="divider"></div>
+        <div class="section">
+            <div class="row">
+                <div class="col s2"><h6>折扣价格（实际价格）<i class="material-icons prefix">mode_edit</i></h6></div>
+                <div class="col s10">
+                    <input id="discount_price" type="text" class="validate">
+                </div>
+            </div>
+        </div>
+        <div class="divider"></div>
+        <div class="section">
+            <div class="row">
+                <div class="col s2"><h6>内容简介<i class="material-icons prefix">mode_edit</i></h6></div>
+                <div class="col s10">
+                    <input id="content" type="text" class="validate">
+                </div>
+            </div>
+        </div>
+        <div class="divider"></div>
+        <div class="section">
+            <div class="row">
+                <div class="col s2"><h6>出版日期<i class="material-icons prefix">mode_edit</i></h6></div>
+                <div class="col s10">
+                    <input  id="press_date" type="text" class="validate">
+                </div>
+            </div>
+        </div>
+        <div class="divider"></div>
+        <div class="section">
+            <div class="row">
+                <div class="col s2"><h6>印刷日期）<i class="material-icons prefix">mode_edit</i></h6></div>
+                <div class="col s10">
+                    <input  id="print_date" type="text" class="validate">
+                </div>
+            </div>
+        </div>
+        <div class="divider"></div>
+        <div class="section">
+            <div class="row">
+                <div class="col s2"><h6>出版社<i class="material-icons prefix">mode_edit</i></h6></div>
+                <div class="col s10">
+                    <input  id="press" type="text" class="validate">
+                </div>
+            </div>
+        </div>
+        <div class="divider"></div>
+        <div class="section">
+            <div class="row">
+                <div class="col s2"><h6>页数<i class="material-icons prefix">mode_edit</i></h6></div>
+                <div class="col s10">
+                    <input id="page" type="text" class="validate">
+                </div>
+            </div>
+        </div>
+        <div class="divider"></div>
+        <div class="section">
+            <div class="row">
+                <div class="col s2"><h6>字数<i class="material-icons prefix">mode_edit</i></h6></div>
+                <div class="col s10">
+                    <input  id="words" type="text" class="validate">
+                </div>
+            </div>
+        </div>
+        <div class="divider"></div>
+        <div class="section">
+            <div class="row">
+                <div class="col s2"><h6>ISBN号<i class="material-icons prefix">mode_edit</i></h6></div>
+                <div class="col s10">
+                    <input id="isbn" type="text" class="validate">
+                </div>
+            </div>
+        </div>
+        <div class="divider"></div>
+        <div class="section">
+            <div class="row">
+                <div class="col s2"><h6>库存量<i class="material-icons prefix">mode_edit</i></h6></div>
+                <div class="col s10">
+                    <input  id="depository_count" type="text" class="validate">
+                </div>
+            </div>
+        </div>
+        <a class="waves-effect waves-light btn" onclick="addBook()">确定添加</a>
+    </div>
+</div>
+
+</body>
+<!--JQuery必须引入-->
+<script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
+<script th:inline="javascript">
+    $(".dropdown-button").dropdown();
+    $(document).ready(function() {
+        $('select').material_select();
+    });
+
+    function addBook() {
+        //请求更新信息，异步ajax请求
+        Materialize.toast('正在请求添加图书', 3000, 'rounded');
+        //ajax验证，提交表单数据
+        var data = {
+            "name":$("#name").val(),
+            "channelId":$("#channel option:selected").val(),
+            "author":$("#author").val(),
+            "price":$("#price").val(),
+            "discountPrice":$("#discount_price").val(),
+            "content":$("#content").val(),
+            "pressDate":$("#press_date").val(),
+            "printDate":$("#print_date").val(),
+            "press":$("#press").val(),
+            "page":$("#page").val(),
+            "words":$("#words").val(),
+            "isbn":$("#isbn").val()
+        };
+        alert(data);
+        var id=[[${shop.id}]];
+        var name=[[${depositoryName}]];
+        var url = '/shop/'+id+'/'+name+'/addBook/'+$("#depository_count").val();
+        Materialize.toast(url, 3000, 'rounded');
+        $.ajax({
+            type: 'POST',//方法类型
+            dataType: "json",//预期服务器返回的数据类型
+            url: url,
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(data),
+            success: function (result) {
+                Materialize.toast(result.message, 3000, 'rounded');
+            },
+            error: function () {
+                swal("数据库异常，请重试", {
+                    icon: "error",
+                });
+            }
+        });
+
+    }
+</script>
+<script>
+    /**
+     * 调用了第三方接口进行图片上传,奇虎360
+     */
+     function uploadImg(){
+        var imgUrl='';
+        var form=$("#imgFile")[0];//第二个表单的id，注意[0]不能漏掉
+        var fd=new FormData(form);
+        Materialize.toast('adecsd', 3000, 'rounded');
+        $.ajax({
+            type: 'POST',//方法类型
+            dataType: "json",//预期服务器返回的数据类型
+            url: "https://api.uomg.com/api/image.360",
+            cache: false,
+            processData: false,
+            contentType: false,
+            data:  fd,//获取选择的图片的文件流
+            success: function (result) {
+                Materialize.toast(result.message, 3000, 'rounded');
+                Materialize.toast(result.imgurl, 3000, 'rounded');
+                imgUrl=result.imgurl;
+            },
+            error: function () {
+                console.log("xxxxxxxxxxxxxxxxxxxxxxxx");
+                Materialize.toast('ccccc', 3000, 'rounded');
+                swal("数据库异常，请重试", {
+                    icon: "error",
+                });
+            }
+        });
+
+    }
+</script>
+</html>

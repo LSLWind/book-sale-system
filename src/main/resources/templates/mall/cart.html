@@ -14,7 +14,7 @@
         <a href="/" class="brand-logo blue-text  ">LSL</a>
         <ul class="hide-on-med-and-down col right">
             <li><a th:href="'/'">首页</a></li>
-            <li><a href="#!">出售图书</a></li>
+            <li><a href="/shop">出售图书</a></li>
             <li><a href="https://github.com/LSLWind/book-sale-system">GitHub地址</a></li>
             <li><a href="#!">项目详细文档</a></li>
 
@@ -30,6 +30,7 @@
         <ul id="dropdown1" class="dropdown-content"  th:if="${customer!=null}">
             <li><a th:href="'/cart/'+${customer.id}">购物车</a></li>
             <li><a th:href="'/customer/'+${customer.id}">个人中心</a></li>
+            <li><a th:href="'/chat/'+${customer.id}">消息中心</a></li>
             <li><a onclick="clearCookieByKey('token')">退出登录</a></li><!--退出登录时清除token即可-->
         </ul>
 

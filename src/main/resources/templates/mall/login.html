@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>NewBee商城-登录</title>
+    <title>lsl商城-登录</title>
     <link rel="stylesheet" href="/mall/css/header.css">
     <link rel="stylesheet" href="/mall/css/common.css">
     <link rel="stylesheet" href="/mall/css/login.css">
@@ -15,7 +15,7 @@
         <div class="login_center">
             <div class="login_top">
                 <div class="left fl">登录</div>
-                <div class="right fr">没有账号？<a href="./register.html" target="_self">立即注册</a></div>
+                <div class="right fr">没有账号？<a href="/customer/registerPage" target="_self">立即注册</a></div>
                 <div class="clear"></div>
                 <div class="under-line center"></div>
             </div>
@@ -53,12 +53,6 @@
 <script type="text/javascript">
     function login() {
         var loginName = $("#loginName").val();
-        if (!validPhoneNumber(loginName)) {
-            swal('请输入正确的登录名(即手机号)', {
-                icon: "error",
-            });
-            return false;
-        }
         var password = $("#password").val();
         if (!validPassword(password)) {
             swal('请输入正确的密码格式(6-18位字符和数字组合)', {
